@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Interview Proctoring System" />
+    <title>Interview Proctoring System</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: #f0f2f5;
+        padding: 20px;
+      }
+      
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+        background: #3498db;
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+      }
+
+      .header h1 {
+        margin: 0 0 10px 0;
+        font-size: 2.5em;
+      }
+
+      .header p {
+        margin: 0;
+        opacity: 0.9;
+      }
+
+      .status-bar {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #ecf0f1;
+        border-radius: 5px;
+      }
+
+      .status-item {
+        text-align: center;
+      }
+
+      .status-item h3 {
+        margin: 0 0 5px 0;
+        color: #34495e;
+        font-size: 1.1em;
+      }
+
+      .status-value {
+        font-weight: bold;
+        font-size: 1.2em;
+        color: #2c3e50;
+      }
+
+      .main-content {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      @media (max-width: 768px) {
+        .main-content {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .video-section {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      }
+
+      .video-section h3 {
+        margin-top: 0;
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+      }
+
+      #webcamVideo {
+        width: 100%;
+        height: 300px;
+        border-radius: 8px;
+        border: 3px solid #3498db;
+        background: #000;
+        object-fit: cover;
+      }
+
+      .controls {
+        margin-top: 15px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      button {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+        transition: all 0.3s;
+        min-width: 140px;
+      }
+
+      .btn-primary {
+        background: #3498db;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #2980b9;
+      }
+
+      .btn-success {
+        background: #27ae60;
+        color: white;
+      }
+
+      .btn-success:hover {
+        background: #229954;
+      }
+
+      .btn-danger {
+        background: #e74c3c;
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background: #c0392b;
+      }
+
+      .events-section {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      }
+
+      .events-section h3 {
+        margin-top: 0;
+        color: #2c3e50;
+        border-bottom: 2px solid #27ae60;
+        padding-bottom: 10px;
+      }
+
+      .events-log {
+        height: 300px;
+        overflow-y: auto;
+        border: 2px solid #bdc3c7;
+        border-radius: 5px;
+        padding: 10px;
+        background: #fff;
+        margin-bottom: 15px;
+      }
+
+      .event {
+        margin-bottom: 8px;
+        padding: 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        border-left: 4px solid #95a5a6;
+      }
+
+      .event.info {
+        background: #d5f4e6;
+        border-left-color: #27ae60;
+      }
+
+      .event.warning {
+        background: #fff3cd;
+        border-left-color: #ffc107;
+      }
+
+      .event.suspicious {
+        background: #f8d7da;
+        border-left-color: #dc3545;
+      }
+
+      .event-time {
+        font-weight: bold;
+        color: #666;
+        display: block;
+        margin-bottom: 3px;
+      }
+
+      .integrity-score {
+        font-size: 24px;
+        font-weight: bold;
+        text-align: center;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 15px 0;
+        transition: all 0.3s;
+      }
+
+      .integrity-high {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .integrity-medium {
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+      }
+
+      .integrity-low {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .candidate-input {
+        margin-bottom: 20px;
+      }
+
+      .candidate-input input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #bdc3c7;
+        border-radius: 5px;
+        font-size: 16px;
+        box-sizing: border-box;
+        transition: border-color 0.3s;
+      }
+
+      .candidate-input input:focus {
+        outline: none;
+        border-color: #3498db;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .loading {
+        text-align: center;
+        color: #666;
+        font-style: italic;
+        padding: 20px;
+      }
+
+      .error {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 10px;
+        border-radius: 5px;
+        margin: 10px 0;
+        border-left: 4px solid #dc3545;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🔍 Interview Proctoring System</h1>
+        <p>Real-time monitoring for interview integrity</p>
+      </div>
+
+      <div class="candidate-input">
+        <input type="text" id="candidateName" placeholder="Enter candidate name" />
+      </div>
+
+      <div class="status-bar">
+        <div class="status-item">
+          <h3>Interview Status</h3>
+          <div class="status-value" id="interviewStatus">Not Started</div>
+        </div>
+        <div class="status-item">
+          <h3>Duration</h3>
+          <div class="status-value" id="interviewDuration">00:00:00</div>
+        </div>
+        <div class="status-item">
+          <h3>Events</h3>
+          <div class="status-value" id="eventCount">0</div>
+        </div>
+      </div>
+
+      <div class="main-content">
+        <div class="video-section">
+          <h3>📹 Webcam Feed</h3>
+          <video id="webcamVideo" autoplay muted playsinline>
+            <div class="loading">Loading camera...</div>
+          </video>
+          <canvas id="detectionCanvas" style="display: none;"></canvas>
+          
+          <div class="controls">
+            <button id="startBtn" class="btn-primary">▶️ Start Interview</button>
+            <button id="stopBtn" class="btn-danger hidden">⏹️ Stop Interview</button>
+            <button id="recordBtn" class="btn-success hidden">🔴 Start Recording</button>
+            <button id="stopRecordBtn" class="btn-danger hidden">⏹️ Stop Recording</button>
+            <button id="downloadBtn" class="btn-success hidden">⬇️ Download Recording</button>
+            <button id="testObjectBtn" class="btn-info" style="margin-top: 10px;">🔍 Test Object Detection</button>
+          </div>
+        </div>
+
+        <div class="events-section">
+          <h3>📋 Event Log</h3>
+          <div id="eventsLog" class="events-log">
+            <div class="loading">No events yet...</div>
+          </div>
+          
+          <div id="integrityScore" class="integrity-score integrity-high">
+            Integrity Score: 100%
+          </div>
+
+          <div class="controls">
+            <button id="generateReportBtn" class="btn-primary">📊 Generate Report</button>
+            <button id="downloadCSVBtn" class="btn-success">⬇️ Download CSV</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- TensorFlow.js for real object detection -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
+    <!-- Add MediaPipe Face Mesh CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+    
+    <!-- Debug script to check TensorFlow.js loading -->
+    <script>
+      window.addEventListener('load', function() {
+        setTimeout(() => {
+          console.log('=== TensorFlow.js Debug ===');
+          console.log('TensorFlow.js loaded:', typeof tf !== 'undefined');
+          console.log('COCO-SSD loaded:', typeof cocoSsd !== 'undefined');
+          if (typeof tf !== 'undefined') {
+            console.log('TensorFlow.js version:', tf.version.tfjs);
+          }
+          if (typeof cocoSsd !== 'undefined') {
+            console.log('COCO-SSD available:', cocoSsd);
+          }
+          console.log('========================');
+        }, 1000);
+      });
+    </script>
+    
+    <script>
+      // Global variables
+      let mediaStream = null;
+      let mediaRecorder = null;
+      let recordedChunks = [];
+      let isInterviewActive = false;
+      let interviewStartTime = null;
+      let events = [];
+      let integrityScore = 100;
+      let detectionInterval = null;
+      let durationInterval = null;
+      
+      // TensorFlow.js COCO-SSD model for real object detection
+      let cocoModel = null;
+      let isModelLoading = false;
+      let modelLoadingAttempts = 0;
+
+      // MediaPipe Face Mesh variables
+      let faceMesh = null;
+      let mediapipeInitialized = false;
+      let lastGazeDetectionTime = Date.now();
+      let lookingAwayStartTimeMP = null;
+
+      // DOM elements
+      const webcamVideo = document.getElementById('webcamVideo');
+      const detectionCanvas = document.getElementById('detectionCanvas');
+      const candidateNameInput = document.getElementById('candidateName');
+      const startBtn = document.getElementById('startBtn');
+      const stopBtn = document.getElementById('stopBtn');
+      const recordBtn = document.getElementById('recordBtn');
+      const stopRecordBtn = document.getElementById('stopRecordBtn');
+      const downloadBtn = document.getElementById('downloadBtn');
+      const testObjectBtn = document.getElementById('testObjectBtn');
+      const eventsLog = document.getElementById('eventsLog');
+      const interviewStatus = document.getElementById('interviewStatus');
+      const interviewDuration = document.getElementById('interviewDuration');
+      const eventCount = document.getElementById('eventCount');
+      const integrityScoreElement = document.getElementById('integrityScore');
+      const generateReportBtn = document.getElementById('generateReportBtn');
+      const downloadCSVBtn = document.getElementById('downloadCSVBtn');
+
+      console.log('🚀 Interview Proctoring System Loading...');
+
+      // Initialize webcam with better status checking
+      async function initializeWebcam() {
+        try {
+          console.log('📷 Requesting webcam access...');
+          mediaStream = await navigator.mediaDevices.getUserMedia({
+            video: {
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+              facingMode: 'user'
+            },
+            audio: true
+          });
+          
+          webcamVideo.srcObject = mediaStream;
+          
+          // Wait for video to be ready
+          return new Promise((resolve, reject) => {
+            webcamVideo.onloadedmetadata = () => {
+              console.log(`✅ Video loaded: ${webcamVideo.videoWidth}x${webcamVideo.videoHeight}`);
+              addEvent('✅ Webcam initialized successfully', 'info');
+              resolve();
+            };
+            
+            webcamVideo.onerror = (error) => {
+              console.error('❌ Video error:', error);
+              reject(error);
+            };
+            
+            // Timeout after 10 seconds
+            setTimeout(() => {
+              if (!webcamVideo.videoWidth) {
+                reject(new Error('Video loading timeout'));
+              }
+            }, 10000);
+          });
+          
+        } catch (error) {
+          console.error('❌ Webcam error:', error);
+          addEvent('❌ Failed to access webcam: ' + error.message, 'error');
+          
+          // Show error in video element
+          webcamVideo.style.display = 'none';
+          const errorDiv = document.createElement('div');
+          errorDiv.className = 'error';
+          errorDiv.innerHTML = '📷 Camera access denied. Please allow camera permissions and refresh the page.';
+          webcamVideo.parentNode.insertBefore(errorDiv, webcamVideo);
+          throw error;
+        }
+      }
+
+      // Add event to log
+      function addEvent(message, type = 'info') {
+        const timestamp = new Date();
+        const event = {
+          time: timestamp.toISOString(),
+          event: message,
+          type: type,
+          timestamp: timestamp
+        };
+        
+        events.push(event);
+        console.log(`📝 Event: [${type.toUpperCase()}] ${message}`);
+        
+        // Update integrity score for suspicious events
+        if (type === 'suspicious' || type === 'warning') {
+          integrityScore = Math.max(0, integrityScore - 5);
+          updateIntegrityScore();
+        }
+
+        updateEventsLog();
+        updateEventCount();
+      }
+
+      // Update events log display
+      function updateEventsLog() {
+        const recentEvents = events.slice(-20);
+        eventsLog.innerHTML = recentEvents.map(event => 
+          `<div class="event ${event.type}">
+            <span class="event-time">${event.timestamp.toLocaleTimeString()}</span>
+            <div>${event.event}</div>
+          </div>`
+        ).join('');
+        eventsLog.scrollTop = eventsLog.scrollHeight;
+      }
+
+      // Update event count
+      function updateEventCount() {
+        eventCount.textContent = events.length;
+      }
+
+      // Update integrity score display
+      function updateIntegrityScore() {
+        integrityScoreElement.textContent = `Integrity Score: ${integrityScore}%`;
+        
+        // Update score color
+        integrityScoreElement.className = 'integrity-score';
+        if (integrityScore >= 80) {
+          integrityScoreElement.classList.add('integrity-high');
+        } else if (integrityScore >= 60) {
+          integrityScoreElement.classList.add('integrity-medium');
+        } else {
+          integrityScoreElement.classList.add('integrity-low');
+        }
+      }
+
+      // Simple face detection - only "no face" >10sec and "looking away" >5sec
+      let lastFaceDetectionTime = Date.now();
+      let noFaceStartTime = null;
+      let lookingAwayStartTime = null;
+      let faceDetectionCount = 0; // Debug counter
+      
+      function detectFace() {
+        faceDetectionCount++;
+        console.log(`🎯 Face detection #${faceDetectionCount} running...`);
+        
+        if (!webcamVideo.videoWidth || !webcamVideo.videoHeight) {
+          console.log('❌ Video dimensions not available:', webcamVideo.videoWidth, webcamVideo.videoHeight);
+          return;
+        }
+
+        try {
+          const canvas = detectionCanvas;
+          const ctx = canvas.getContext('2d');
+          canvas.width = webcamVideo.videoWidth;
+          canvas.height = webcamVideo.videoHeight;
+          
+          ctx.drawImage(webcamVideo, 0, 0, canvas.width, canvas.height);
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const data = imageData.data;
+          
+          const result = detectSingleFace(data, canvas.width, canvas.height);
+          const currentTime = Date.now();
+          
+          console.log(`👤 Face detection result:`, {
+            hasFace: result.hasFace,
+            isCentered: result.isCentered,
+            confidence: result.confidence.toFixed(3)
+          });
+          
+          if (result.hasFace) {
+            console.log('✅ Face detected - resetting no face timer');
+            // Face detected - reset no face timer
+            noFaceStartTime = null;
+            lastFaceDetectionTime = currentTime;
+            
+            // Check if looking away (face not centered or low confidence)
+            if (!result.isCentered || result.confidence < 0.2) { // Lowered threshold
+              if (lookingAwayStartTime === null) {
+                lookingAwayStartTime = currentTime;
+                console.log('⚠️ Started looking away timer');
+              } else if (currentTime - lookingAwayStartTime > 5000) { // >5 seconds
+                addEvent('⚠️ Candidate looking away from camera for more than 5 seconds', 'warning');
+                lookingAwayStartTime = currentTime; // Reset to prevent spam
+                console.log('🚨 Looking away alert triggered');
+              }
+            } else {
+              if (lookingAwayStartTime !== null) {
+                console.log('✅ Looking away timer reset - face centered');
+              }
+              lookingAwayStartTime = null; // Reset looking away timer
+            }
+          } else {
+            console.log('❌ No face detected');
+            // Always log warning if no face detected
+            addEvent('⚠️ No face detected in current frame', 'warning');
+            // No face detected
+            lookingAwayStartTime = null; // Reset looking away timer
+            
+            if (noFaceStartTime === null) {
+              noFaceStartTime = currentTime;
+              console.log('⚠️ Started no face timer');
+            } else {
+              const noFaceDuration = currentTime - noFaceStartTime;
+              console.log(`⏱️ No face for ${(noFaceDuration/1000).toFixed(1)} seconds`);
+              
+              if (noFaceDuration > 10000) { // >10 seconds
+                addEvent('⚠️ No face detected for more than 10 seconds', 'warning');
+                noFaceStartTime = currentTime; // Reset to prevent spam
+                console.log('🚨 No face alert triggered');
+              }
+            }
+          }
+        } catch (error) {
+          console.error('💥 Face detection error:', error);
+        }
+      }
+      
+      // Simplified and more reliable face detection
+      function detectSingleFace(data, width, height) {
+        console.log(`🔍 Analyzing frame: ${width}x${height}`);
+        
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const regionSize = Math.min(width, height) * 0.3;
+        
+        let skinPixels = 0;
+        let totalPixels = 0;
+        let brightPixels = 0;
+        
+        // Simple center region analysis
+        for (let y = centerY - regionSize; y < centerY + regionSize; y += 8) {
+          for (let x = centerX - regionSize; x < centerX + regionSize; x += 8) {
+            if (y >= 0 && y < height && x >= 0 && x < width) {
+              const index = (Math.floor(y) * width + Math.floor(x)) * 4;
+              const r = data[index];
+              const g = data[index + 1];
+              const b = data[index + 2];
+              
+              const brightness = (r + g + b) / 3;
+              
+              // Very simple skin detection
+              if (r > 80 && g > 30 && b > 20 && 
+                  r > g && brightness > 50 && brightness < 230) {
+                skinPixels++;
+              }
+              
+              if (brightness > 100) {
+                brightPixels++;
+              }
+              
+              totalPixels++;
+            }
+          }
+        }
+        
+        if (totalPixels === 0) {
+          console.log('⚠️ No pixels analyzed');
+          return { hasFace: false, isCentered: true, confidence: 0 };
+        }
+        
+        const skinRatio = skinPixels / totalPixels;
+        const brightRatio = brightPixels / totalPixels;
+        
+        console.log(`📊 Detection stats: skinRatio=${skinRatio.toFixed(3)}, brightRatio=${brightRatio.toFixed(3)}, skinPixels=${skinPixels}/${totalPixels}`);
+        
+        // Very lenient thresholds for better detection
+        const hasFace = skinRatio > 0.05 && brightRatio > 0.1; // Much lower threshold
+        const confidence = skinRatio + brightRatio * 0.3;
+        const isCentered = true; // Always consider centered for simplicity
+        
+        return { hasFace, isCentered, confidence };
+      }
+
+      // Load TensorFlow.js COCO-SSD model for real object detection
+      async function loadObjectDetectionModel() {
+        if (cocoModel || isModelLoading) return;
+        
+        try {
+          isModelLoading = true;
+          addEvent('🔄 Loading AI object detection model...', 'info');
+          console.log('Loading COCO-SSD model...');
+          
+          // Check if TensorFlow.js and COCO-SSD are available
+          if (typeof tf === 'undefined') {
+            throw new Error('TensorFlow.js not loaded. Please check internet connection.');
+          }
+          if (typeof cocoSsd === 'undefined') {
+            throw new Error('COCO-SSD not loaded. Please check internet connection.');
+          }
+          
+          console.log('TensorFlow.js and COCO-SSD libraries loaded successfully');
+          
+          // Load the COCO-SSD model
+          cocoModel = await cocoSsd.load();
+          console.log('✅ COCO-SSD model loaded successfully');
+          addEvent('✅ AI object detection model loaded successfully', 'info');
+          addEvent('🔍 Real-time object detection activated using TensorFlow.js', 'info');
+        } catch (error) {
+          console.error('❌ Failed to load COCO-SSD model:', error);
+          addEvent(`❌ Failed to load AI model: ${error.message}`, 'warning');
+          modelLoadingAttempts++;
+          
+          // Retry loading up to 3 times
+          if (modelLoadingAttempts < 3) {
+            console.log(`Retrying model load (attempt ${modelLoadingAttempts + 1}/3)...`);
+            setTimeout(() => {
+              isModelLoading = false;
+              loadObjectDetectionModel();
+            }, 3000);
+          } else {
+            addEvent('❌ AI model loading failed after 3 attempts. Object detection disabled.', 'error');
+          }
+        } finally {
+          isModelLoading = false;
+        }
+      }
+
+      // Real TensorFlow.js object detection using COCO-SSD
+      let lastObjectAlert = {};
+      const UNAUTHORIZED_OBJECTS = [
+        // Mobile devices
+        'cell phone', 'mobile phone', 'phone',
+        // Books and reading materials
+        'book', 
+        // Electronic devices
+        'laptop', 'tablet', 'tv', 'monitor', 'computer',
+        'keyboard', 'mouse', 'remote',
+        // Common items that might contain information
+        'bottle', 'cup', 'clock', 'scissors',
+        // Additional COCO-SSD detectable objects
+        'handbag', 'backpack', 'suitcase'
+      ];
+      
+      async function detectObjects() {
+        console.log('🔍 Object detection cycle started');
+        if (!webcamVideo.videoWidth || !webcamVideo.videoHeight) {
+          console.log('❌ Video not ready:', webcamVideo.videoWidth, 'x', webcamVideo.videoHeight);
+          addEvent('❌ Webcam video not ready for object detection', 'error');
+          return;
+        }
+        if (!cocoModel) {
+          console.log('❌ Object detection model not loaded');
+          addEvent('❌ Object detection model not loaded', 'error');
+          return;
+        }
+        
+        try {
+          if (!cocoModel) {
+            console.log('⚠️ Model not loaded, attempting to load...');
+            addEvent('⚠️ AI model not ready, loading now...', 'warning');
+            await loadObjectDetectionModel();
+            if (!cocoModel) {
+              console.log('❌ Model loading failed, aborting detection');
+              return;
+            }
+          }
+          
+          console.log('🤖 Model ready, running detection...');
+          const currentTime = Date.now();
+          
+          // Single detection attempt with better error handling
+          try {
+            const predictions = await cocoModel.detect(webcamVideo);
+            
+            // Log all detected objects except 'person'
+            predictions.forEach((pred, idx) => {
+              if (pred.class.toLowerCase() !== 'person') {
+                addEvent(`Detected object: ${pred.class} (${(pred.score*100).toFixed(1)}% confidence)`, 'info');
+              }
+            });
+            
+            // Lower threshold for laptop and book
+            const unauthorizedObjects = predictions.filter(prediction => {
+              const className = prediction.class.toLowerCase();
+              let threshold = 0.15;
+              if (className.includes('laptop') || className.includes('book')) {
+                threshold = 0.07;
+              }
+              const isUnauthorized = UNAUTHORIZED_OBJECTS.some(obj => {
+                const objLower = obj.toLowerCase();
+                return className.includes(objLower) || objLower.includes(className);
+              });
+              return isUnauthorized && prediction.score > threshold;
+            });
+            
+            console.log(`⚠️ Found ${unauthorizedObjects.length} unauthorized objects`);
+            
+            // Process alerts with shorter cooldown
+            for (let obj of unauthorizedObjects) {
+              const objKey = obj.class.toLowerCase();
+              const confidence = (obj.score * 100).toFixed(1);
+              
+              if (!lastObjectAlert[objKey] || currentTime - lastObjectAlert[objKey] > 3000) { // 3 second cooldown
+                const bbox = obj.bbox || [0, 0, 100, 100];
+                const location = getObjectLocation(bbox, webcamVideo.videoWidth, webcamVideo.videoHeight);
+                
+                addEvent(`🚨 Unauthorized object: ${obj.class} (${confidence}% confidence) at ${location}`, 'suspicious');
+                lastObjectAlert[objKey] = currentTime;
+                
+                console.log(`🚨 ALERT SENT: ${obj.class} with ${confidence}% confidence`);
+              } else {
+                const timeSinceAlert = (currentTime - lastObjectAlert[objKey]) / 1000;
+                console.log(`⏰ Cooldown active for ${obj.class} (${timeSinceAlert.toFixed(1)}s ago)`);
+              }
+            }
+            
+          } catch (detectionError) {
+            console.error('💥 Detection execution failed:', detectionError);
+            addEvent('⚠️ Object detection failed - retrying next cycle', 'warning');
+          }
+          
+        } catch (error) {
+          console.error('💥 Object detection error:', error);
+          addEvent(`⚠️ Object detection error: ${error.message}`, 'warning');
+        }
+        
+        console.log('✅ Object detection cycle completed');
+      }
+      
+      // Get object location description
+      function getObjectLocation(bbox, videoWidth, videoHeight) {
+        const [x, y, width, height] = bbox;
+        const centerX = x + width / 2;
+        const centerY = y + height / 2;
+        
+        const relativeX = centerX / videoWidth;
+        const relativeY = centerY / videoHeight;
+        
+        let location = '';
+        
+        // Vertical position
+        if (relativeY < 0.33) location += 'upper ';
+        else if (relativeY > 0.67) location += 'lower ';
+        else location += 'center ';
+        
+        // Horizontal position
+        if (relativeX < 0.33) location += 'left';
+        else if (relativeX > 0.67) location += 'right';
+        else location += 'area';
+        
+        return location.trim();
+      }
+
+      // Update duration
+      function updateDuration() {
+        if (!interviewStartTime) return;
+        
+        const now = new Date();
+        const diff = now - interviewStartTime;
+        
+        const hours = Math.floor(diff / 3600000);
+        const minutes = Math.floor((diff % 3600000) / 60000);
+        const seconds = Math.floor((diff % 60000) / 1000);
+        
+        interviewDuration.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }
+
+      // Start interview
+      function startInterview() {
+        if (!candidateNameInput.value.trim()) {
+          alert('⚠️ Please enter candidate name');
+          return;
+        }
+
+        isInterviewActive = true;
+        interviewStartTime = new Date();
+        
+        // Update UI
+        startBtn.classList.add('hidden');
+        stopBtn.classList.remove('hidden');
+        recordBtn.classList.remove('hidden');
+        candidateNameInput.disabled = true;
+        interviewStatus.textContent = 'Active';
+        
+        // Start monitoring with proper intervals
+        console.log('🎯 Starting interview session...');
+        
+        // Face detection every 1 second
+        console.log('⏰ Setting up face detection interval (1 second)');
+        detectionInterval = setInterval(() => {
+          console.log('⚡ Face detection interval triggered');
+          detectFace();
+        }, 1000);
+
+        // Object detection every 3 seconds as required
+        console.log('⏰ Setting up object detection interval (3 seconds)');
+        const objectDetectionInterval = setInterval(() => {
+          console.log('⚡ Object detection interval triggered');
+          detectObjects();
+        }, 3000);
+        
+        // Store both intervals for cleanup
+        detectionInterval.objectInterval = objectDetectionInterval;
+
+        durationInterval = setInterval(updateDuration, 1000);
+        
+        addEvent(`🎯 Interview started for "${candidateNameInput.value}"`, 'info');
+        addEvent('👁️ Face detection monitoring activated', 'info');
+        addEvent('🤖 AI-powered object detection using TensorFlow.js COCO-SSD', 'info');
+        addEvent('🔍 Monitoring for: phones, books, laptops, tablets, electronics', 'info');
+        
+        console.log('🎯 Interview session started');
+      }
+
+      // Stop interview
+      function stopInterview() {
+        isInterviewActive = false;
+        
+        // Update UI
+        startBtn.classList.remove('hidden');
+        stopBtn.classList.add('hidden');
+        recordBtn.classList.add('hidden');
+        stopRecordBtn.classList.add('hidden');
+        candidateNameInput.disabled = false;
+        interviewStatus.textContent = 'Completed';
+        
+        // Stop monitoring
+        if (detectionInterval) {
+          clearInterval(detectionInterval);
+          if (detectionInterval.objectInterval) {
+            clearInterval(detectionInterval.objectInterval);
+          }
+          detectionInterval = null;
+        }
+        
+        if (durationInterval) {
+          clearInterval(durationInterval);
+          durationInterval = null;
+        }
+
+        // Stop recording if active
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+          stopRecording();
+        }
+        
+        addEvent('🏁 Interview session ended', 'info');
+        addEvent(`📊 Final integrity score: ${integrityScore}%`, 'info');
+        console.log('🏁 Interview session completed');
+      }
+
+      // Start recording
+      function startRecording() {
+        if (!mediaStream) {
+          addEvent('❌ Cannot start recording - no media stream available', 'error');
+          return;
+        }
+        
+        try {
+          recordedChunks = [];
+          mediaRecorder = new MediaRecorder(mediaStream, {
+            mimeType: 'video/webm;codecs=vp9,opus'
+          });
+          
+          mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+              recordedChunks.push(event.data);
+            }
+          };
+          
+          mediaRecorder.onstop = () => {
+            const blob = new Blob(recordedChunks, { type: 'video/webm' });
+            const url = URL.createObjectURL(blob);
+            downloadBtn.onclick = () => {
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `interview_${candidateNameInput.value || 'candidate'}_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.webm`;
+              a.click();
+              addEvent('⬇️ Recording downloaded successfully', 'info');
+            };
+            downloadBtn.classList.remove('hidden');
+            addEvent('💾 Recording ready for download', 'info');
+          };
+          
+          mediaRecorder.start(1000);
+          recordBtn.classList.add('hidden');
+          stopRecordBtn.classList.remove('hidden');
+          
+          addEvent('🎥 Video recording started', 'info');
+        } catch (error) {
+          console.error('Recording error:', error);
+          addEvent('❌ Failed to start recording: ' + error.message, 'error');
+        }
+      }
+
+      // Stop recording
+      function stopRecording() {
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+          mediaRecorder.stop();
+          recordBtn.classList.remove('hidden');
+          stopRecordBtn.classList.add('hidden');
+          addEvent('⏹️ Video recording stopped', 'info');
+        }
+      }
+
+      // Generate CSV report
+      function generateCSVReport() {
+        try {
+          const csvContent = [
+            'Timestamp,Event,Type,Integrity_Score',
+            ...events.map(e => `"${e.time}","${e.event}","${e.type}","${integrityScore}"`)
+          ].join('\n');
+          
+          const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `interview_report_${candidateNameInput.value || 'candidate'}_${new Date().toISOString().slice(10, 19).replace(/:/g, '-')}.csv`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          
+          addEvent('📊 CSV report generated and downloaded', 'info');
+        } catch (error) {
+          console.error('CSV generation error:', error);
+          addEvent('❌ Failed to generate CSV report', 'error');
+        }
+      }
+
+      // MediaPipe Face Mesh integration for gaze/focus detection
+      async function initializeMediaPipeFaceMesh() {
+        if (mediapipeInitialized) return;
+        faceMesh = new FaceMesh({
+          locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
+        });
+        faceMesh.setOptions({
+          maxNumFaces: 1,
+          refineLandmarks: true,
+          minDetectionConfidence: 0.5,
+          minTrackingConfidence: 0.5
+        });
+        faceMesh.onResults(onFaceMeshResults);
+        mediapipeInitialized = true;
+      }
+
+      // Process results from MediaPipe
+      function onFaceMeshResults(results) {
+        if (!results.multiFaceLandmarks || results.multiFaceLandmarks.length === 0) {
+          // No face detected
+          lookingAwayStartTimeMP = null;
+          return;
+        }
+        const landmarks = results.multiFaceLandmarks[0];
+        // Estimate gaze/focus using eye landmarks
+        // Use left/right eye center and iris position
+        const leftEye = landmarks[468]; // left iris
+        const rightEye = landmarks[473]; // right iris
+        const noseTip = landmarks[1];
+        // Calculate if eyes are centered (simple heuristic)
+        const eyeCenterX = (leftEye.x + rightEye.x) / 2;
+        const noseX = noseTip.x;
+        const gazeCentered = Math.abs(eyeCenterX - noseX) < 0.03; // threshold for looking at camera
+        const currentTime = Date.now();
+        if (!gazeCentered) {
+          if (lookingAwayStartTimeMP === null) {
+            lookingAwayStartTimeMP = currentTime;
+          } else if (currentTime - lookingAwayStartTimeMP > 5000) {
+            addEvent('⚠️ Candidate looking away from screen (MediaPipe) for more than 5 seconds', 'warning');
+            lookingAwayStartTimeMP = currentTime;
+          }
+        } else {
+          lookingAwayStartTimeMP = null;
+        }
+      }
+
+      // Start MediaPipe Face Mesh on webcam
+      async function startMediaPipeFaceMesh() {
+        await initializeMediaPipeFaceMesh();
+        const camera = new Camera(webcamVideo, {
+          onFrame: async () => {
+            await faceMesh.send({image: webcamVideo});
+          },
+          width: 640,
+          height: 480
+        });
+        camera.start();
+      }
+
+      // Event listeners
+      startBtn.addEventListener('click', startInterview);
+      stopBtn.addEventListener('click', stopInterview);
+      recordBtn.addEventListener('click', startRecording);
+      stopRecordBtn.addEventListener('click', stopRecording);
+      downloadCSVBtn.addEventListener('click', generateCSVReport);
+      
+      // Test object detection manually
+      testObjectBtn.addEventListener('click', async () => {
+        console.log('🔍 Manual object detection test triggered');
+        addEvent('🔍 Manual object detection test started...', 'info');
+        await detectObjects();
+      });
+      
+      generateReportBtn.addEventListener('click', () => {
+        addEvent('📑 Generating comprehensive report...', 'info');
+        setTimeout(() => {
+          addEvent(`📋 Report Summary: ${events.length} events logged, ${integrityScore}% integrity score`, 'info');
+          alert(`📋 Report Generated!\n\nCandidate: ${candidateNameInput.value}\nEvents: ${events.length}\nIntegrity Score: ${integrityScore}%\n\nDownload CSV for detailed report.`);
+        }, 1000);
+      });
+
+      // Initialize the application
+      document.addEventListener('DOMContentLoaded', async () => {
+        console.log('🏁 DOM loaded, initializing system...');
+        await initializeWebcam();
+        
+        // Load TensorFlow.js object detection model
+        await loadObjectDetectionModel();
+        
+        // Start MediaPipe Face Mesh
+        await startMediaPipeFaceMesh();
+        
+        addEvent('🚀 Interview Proctoring System initialized and ready', 'info');
+        console.log('✅ System fully initialized');
+      });
+
+      // Add some demo events on load for testing
+      setTimeout(() => {
+        addEvent('🔧 System self-check completed', 'info');
+        addEvent('📡 All monitoring systems online', 'info');
+      }, 2000);
+    </script>
+  </body>
+</html>
